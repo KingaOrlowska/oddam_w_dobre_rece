@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -52,10 +52,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'oddam_w_dobre_rece.urls'
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'oddam_w_dobre_rece', 'Templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,6 +71,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'oddam_w_dobre_rece.wsgi.application'
 
@@ -84,7 +89,7 @@ WSGI_APPLICATION = 'oddam_w_dobre_rece.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'oddam_w_dobre_rece',
+        'NAME': 'charity-donation',
         'USER': 'postgres',
         'PASSWORD': 'new_password',
         'HOST': 'localhost',
@@ -128,9 +133,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+
+# URL do obsługi statycznych plików
+STATIC_URL = '/static/'
+
+# Folder, w którym znajdują się statyczne pliki
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'main/static'),  # Dodaj tę linijkę
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = 'user_home'
