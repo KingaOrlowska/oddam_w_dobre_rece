@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Profil użytkownika
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 20px;">
+    <h1 style="font-size: 2.5em; margin-bottom: 20px;">Profil użytkownika</h1>
+    <p style="font-size: 1.5em; margin-bottom: 10px;"><strong>Imię:</strong> {{ user.first_name }}</p>
+    <p style="font-size: 1.5em; margin-bottom: 10px;"><strong>Nazwisko:</strong> {{ user.last_name }}</p>
+    <p style="font-size: 1.5em; margin-bottom: 10px;"><strong>Email:</strong> {{ user.email }}</p>
+</div>
+{% endblock %}

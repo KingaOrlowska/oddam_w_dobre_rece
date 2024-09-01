@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Szczegóły Darowizny
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 20px;">
+    <h2 style="font-size: 2.5em; margin-bottom: 20px;">Szczegóły Darowizny</h2>
+    <p style="font-size: 1.5em;">Data utworzenia: {{ donation.created_at }}</p>
+    <p style="font-size: 1.5em;">Liczba worków: {{ donation.quantity }}</p>
+    <p style="font-size: 1.5em;">Organizacja: {{ donation.institution.name }}</p>
+    <p style="font-size: 1.5em;">Adres: {{ donation.address }}</p>
+    <p style="font-size: 1.5em;">Miasto: {{ donation.city }}</p>
+    <p style="font-size: 1.5em;">Kod pocztowy: {{ donation.zip_code }}</p>
+    <p style="font-size: 1.5em;">Numer telefonu: {{ donation.phone_number }}</p>
+    <p style="font-size: 1.5em;">Data odbioru: {{ donation.pick_up_date }}</p>
+    <p style="font-size: 1.5em;">Godzina odbioru: {{ donation.pick_up_time }}</p>
+    <p style="font-size: 1.5em;">Uwagi dla kuriera: {{ donation.pick_up_comment }}</p>
+    <p style="font-size: 1.5em;">Status: {% if donation.is_picked_up %}Odebrano{% else %}Nieodebrane{% endif %}</p>
+
+    <!-- Button powrotu do listy darów -->
+    <a href="{% url 'user_donations' %}" class="btn btn--small btn--highlighted" style="margin-top: 20px;">Powrót do listy darów</a>
+</div>
+{% endblock %}

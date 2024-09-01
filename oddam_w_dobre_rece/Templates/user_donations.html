@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Moje Dary
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 20px;">
+    <h2 style="font-size: 2.5em; margin-bottom: 20px;">Moje Dary</h2>
+    <table style="width: 100%; font-size: 1.5em; margin-bottom: 20px; text-align: left;">
+        <thead>
+            <tr>
+                <th>Data utworzenia</th>
+                <th>Liczba worków</th>
+                <th>Organizacja</th>
+                <th>Status</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for donation in donations %}
+            <tr>
+                <td>{{ donation.created_at }}</td>
+                <td>{{ donation.quantity }}</td>
+                <td>{{ donation.institution.name }}</td>
+                <td>
+                    {% if donation.is_picked_up %}
+                        Odebrano
+                    {% else %}
+                        Nieodebrane
+                    {% endif %}
+                </td>
+                <td>
+                    <!-- Button do szczegółów darowizny -->
+                    <a href="{% url 'donation_detail' donation.id %}" class="btn btn--small btn--highlighted">Szczegóły</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

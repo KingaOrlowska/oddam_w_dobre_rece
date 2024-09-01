@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -29,8 +29,11 @@ class Institution(models.Model):
     categories = models.ManyToManyField(Category)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.get_type_display()})"
 
+    class Meta:
+        verbose_name = "Instytucja"
+        verbose_name_plural = "Instytucje"
 
 class Donation(models.Model):
     quantity = models.IntegerField()
@@ -44,6 +47,11 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    is_picked_up = models.BooleanField(default=False)  # Nowe pole
+    created_at = models.DateTimeField(default=timezone.now)  # Nowe pole
 
     def __str__(self):
         return f"Donation of {self.quantity} bags to {self.institution.name}"
+
+
+

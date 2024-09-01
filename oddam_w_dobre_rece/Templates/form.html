@@ -10,7 +10,6 @@
   <div class="container container--90 header-content" style="display: flex; align-items: center;">
     <!-- Sekcja obrazu -->
     <div class="header-image" style="flex: 1; background-image: url('{% static "images/header-form-bg.jpg" %}'); background-size: cover; background-position: left; height: 800px;">
-      <!-- Obraz ustawiony jako tło, stylizowany za pomocą CSS -->
     </div>
 
     <!-- Sekcja tekstowa -->
@@ -63,7 +62,8 @@
   <div class="form--steps-container">
     <div class="form--steps-counter">Krok <span>1</span>/5</div>
 
-    <form action="{% url 'form_confirmation' %}" method="post">
+    <!-- Dodano atrybut data-confirmation-url do formularza -->
+    <form action="{% url 'add_donation' %}" method="post" id="donation-form" data-confirmation-url="{% url 'form_confirmation' %}">
       {% csrf_token %}
 
       <!-- STEP 1: class .active is switching steps -->
@@ -93,7 +93,7 @@
         <div class="form-group form-group--inline">
           <label>
             Liczba 60l worków:
-            <input type="number" name="bags" step="1" min="1" />
+            <input type="number" name="bags" step="1" min="1" autocomplete="off" />
           </label>
         </div>
 
@@ -135,36 +135,36 @@
           <div class="form-section form-section--column">
             <h4>Adres odbioru</h4>
             <div class="form-group form-group--inline">
-              <label> Ulica <input type="text" name="address" /> </label>
+              <label> Ulica <input type="text" name="address" autocomplete="street-address" /> </label>
             </div>
 
             <div class="form-group form-group--inline">
-              <label> Miasto <input type="text" name="city" /> </label>
+              <label> Miasto <input type="text" name="city" autocomplete="address-level2" /> </label>
             </div>
 
             <div class="form-group form-group--inline">
-              <label>Kod pocztowy <input type="text" name="postcode" /></label>
+              <label>Kod pocztowy <input type="text" name="postcode" autocomplete="postal-code" /></label>
             </div>
 
             <div class="form-group form-group--inline">
-              <label>Numer telefonu <input type="phone" name="phone" /></label>
+              <label>Numer telefonu <input type="tel" name="phone" autocomplete="tel" /></label>
             </div>
           </div>
 
           <div class="form-section form-section--column">
             <h4>Termin odbioru</h4>
             <div class="form-group form-group--inline">
-              <label> Data <input type="date" name="data" /> </label>
+              <label> Data <input type="date" name="data" autocomplete="bday" /> </label>
             </div>
 
             <div class="form-group form-group--inline">
-              <label> Godzina <input type="time" name="time" /> </label>
+              <label> Godzina <input type="time" name="time" autocomplete="off" /> </label>
             </div>
 
             <div class="form-group form-group--inline">
               <label>
                 Uwagi dla kuriera
-                <textarea name="more_info" rows="5"></textarea>
+                <textarea name="more_info" rows="5" autocomplete="off"></textarea>
               </label>
             </div>
           </div>
@@ -206,14 +206,10 @@
 
         <div class="form-group form-group--buttons">
           <button type="button" class="btn prev-step">Wstecz</button>
-          <button type="submit" class="btn">Potwierdzam</button>
+          <button type="submit" class="btn" id="confirm-button">Potwierdzam</button> <!-- Dodano id="confirm-button" -->
         </div>
       </div>
     </form>
   </div>
 </section>
-
-<!-- Include JavaScript file -->
-<script src="{% static 'js/app.js' %}"></script>
-
 {% endblock %}

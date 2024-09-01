@@ -6,11 +6,11 @@ header {
     background-size: 70vw;
     height: 100vh;
 
-    @include medium {
-      background-position: bottom left -55vh;
-      background-size: 90vw;
+        @include medium {
+            background-position: bottom left -55vh;
+            background-size: 90vw;
+        }
     }
-  }
 
 
   &.header--form-page {

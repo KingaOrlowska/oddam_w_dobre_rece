@@ -1,7 +1,8 @@
-document.addEventListener("DOMContentLoaded", function() {
-  /**
-   * HomePage - Help section
-   */
+console.log("Hello world");
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM fully loaded and parsed.");
+
   class Help {
     constructor($el) {
       this.$el = $el;
@@ -16,20 +17,17 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     events() {
-      /**
-       * Slide buttons
-       */
-      this.$buttonsContainer.addEventListener("click", e => {
+      this.$buttonsContainer.addEventListener("click", (e) => {
         if (e.target.classList.contains("btn")) {
           this.changeSlide(e);
         }
       });
 
-      /**
-       * Pagination buttons
-       */
-      this.$el.addEventListener("click", e => {
-        if (e.target.classList.contains("btn") && e.target.parentElement.parentElement.classList.contains("help--slides-pagination")) {
+      this.$el.addEventListener("click", (e) => {
+        if (
+          e.target.classList.contains("btn") &&
+          e.target.parentElement.parentElement.classList.contains("help--slides-pagination")
+        ) {
           this.changePage(e);
         }
       });
@@ -39,15 +37,14 @@ document.addEventListener("DOMContentLoaded", function() {
       e.preventDefault();
       const $btn = e.target;
 
-      // Buttons Active class change
-      [...this.$buttonsContainer.children].forEach(btn => btn.firstElementChild.classList.remove("active"));
+      [...this.$buttonsContainer.children].forEach((btn) =>
+        btn.firstElementChild.classList.remove("active")
+      );
       $btn.classList.add("active");
 
-      // Current slide
       this.currentSlide = $btn.parentElement.dataset.id;
 
-      // Slides active class change
-      this.$slidesContainers.forEach(el => {
+      this.$slidesContainers.forEach((el) => {
         el.classList.remove("active");
 
         if (el.dataset.id === this.currentSlide) {
@@ -56,24 +53,17 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
 
-    /**
-     * TODO: callback to page change event
-     */
     changePage(e) {
       e.preventDefault();
       const page = e.target.dataset.page;
-
-      console.log(page);
     }
   }
+
   const helpSection = document.querySelector(".help");
   if (helpSection !== null) {
     new Help(helpSection);
   }
 
-  /**
-   * Form Select
-   */
   class FormSelect {
     constructor($el) {
       this.$el = $el;
@@ -88,26 +78,22 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     createElements() {
-      // Input for value
       this.valueInput = document.createElement("input");
       this.valueInput.type = "text";
       this.valueInput.name = this.$el.name;
+      this.valueInput.hidden = true;
 
-      // Dropdown container
       this.dropdown = document.createElement("div");
       this.dropdown.classList.add("dropdown");
 
-      // List container
       this.ul = document.createElement("ul");
 
-      // All list options
       this.options.forEach((el, i) => {
         const li = document.createElement("li");
         li.dataset.value = el.value;
         li.innerText = el.innerText;
 
         if (i === 0) {
-          // First clickable option
           this.current = document.createElement("div");
           this.current.innerText = el.innerText;
           this.dropdown.appendChild(this.current);
@@ -124,47 +110,34 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     addEvents() {
-      this.dropdown.addEventListener("click", e => {
+      this.dropdown.addEventListener("click", (e) => {
         const target = e.target;
         this.dropdown.classList.toggle("selecting");
 
-        // Save new value only when clicked on li
         if (target.tagName === "LI") {
           this.valueInput.value = target.dataset.value;
           this.current.innerText = target.innerText;
+          this.ul.querySelector(".selected").classList.remove("selected");
+          target.classList.add("selected");
         }
       });
     }
   }
-  document.querySelectorAll(".form-group--dropdown select").forEach(el => {
+
+  document.querySelectorAll(".form-group--dropdown select").forEach((el) => {
     new FormSelect(el);
   });
 
-  /**
-   * Hide elements when clicked on document
-   */
-  document.addEventListener("click", function(e) {
+  document.addEventListener("click", function (e) {
     const target = e.target;
-    const tagName = target.tagName;
 
-    if (target.classList.contains("dropdown")) return false;
+    if (target.closest(".dropdown")) return false;
 
-    if (tagName === "LI" && target.parentElement.parentElement.classList.contains("dropdown")) {
-      return false;
-    }
-
-    if (tagName === "DIV" && target.parentElement.classList.contains("dropdown")) {
-      return false;
-    }
-
-    document.querySelectorAll(".form-group--dropdown .dropdown").forEach(el => {
+    document.querySelectorAll(".form-group--dropdown .dropdown").forEach((el) => {
       el.classList.remove("selecting");
     });
   });
 
-  /**
-   * Switching between form steps
-   */
   class FormSteps {
     constructor(form) {
       this.$form = form;
@@ -177,77 +150,153 @@ document.addEventListener("DOMContentLoaded", function() {
       const $stepForms = form.querySelectorAll("form > div");
       this.slides = [...this.$stepInstructions, ...$stepForms];
 
+      this.summaryItems = document.getElementById("summary-items");
+      this.summaryAddress = document.getElementById("summary-address");
+      this.summaryDate = document.getElementById("summary-date");
+
       this.init();
     }
 
-    /**
-     * Init all methods
-     */
     init() {
       this.events();
       this.updateForm();
+      this.filterOrganizations();
     }
 
-    /**
-     * All events that are happening in form
-     */
     events() {
-      // Next step
-      this.$next.forEach(btn => {
-        btn.addEventListener("click", e => {
+      this.$next.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
           e.preventDefault();
           this.currentStep++;
           this.updateForm();
         });
       });
 
-      // Previous step
-      this.$prev.forEach(btn => {
-        btn.addEventListener("click", e => {
+      this.$prev.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
           e.preventDefault();
           this.currentStep--;
           this.updateForm();
         });
       });
 
-      // Form submit
-      this.$form.querySelector("form").addEventListener("submit", e => this.submit(e));
+      this.$form.querySelector("form").addEventListener("submit", (e) => this.submit(e));
+
+      document.querySelectorAll('input[name="categories"]').forEach((input) => {
+        input.addEventListener("change", this.filterOrganizations.bind(this));
+      });
     }
 
-    /**
-     * Update form front-end
-     * Show next or previous section etc.
-     */
     updateForm() {
       this.$step.innerText = this.currentStep;
 
-      // TODO: Validation
-
-      this.slides.forEach(slide => {
-        slide.classList.remove("active");
-
-        if (slide.dataset.step == this.currentStep) {
-          slide.classList.add("active");
-        }
+      this.slides.forEach((slide) => {
+        slide.classList.toggle("active", slide.dataset.step == this.currentStep);
       });
 
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
-      // TODO: get data from inputs and show them in summary
+      if (this.currentStep === 3) {
+        this.filterOrganizations();
+      }
+
+      if (this.currentStep === 5) {
+        this.updateSummary();
+      }
     }
 
-    /**
-     * Submit form
-     *
-     * TODO: validation, send data to server
-     */
+    updateSummary() {
+      const selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+        .map(input => input.nextElementSibling.nextElementSibling.innerText);
+
+      const bags = document.querySelector('input[name="bags"]').value;
+
+      const organization = document.querySelector('input[name="organization"]:checked')
+        .closest(".form-group--checkbox").querySelector(".title").innerText;
+
+      const address = {
+        street: document.querySelector('input[name="address"]').value,
+        city: document.querySelector('input[name="city"]').value,
+        postcode: document.querySelector('input[name="postcode"]').value,
+        phone: document.querySelector('input[name="phone"]').value,
+      };
+
+      const pickUp = {
+        date: document.querySelector('input[name="data"]').value,
+        time: document.querySelector('input[name="time"]').value,
+        comment: document.querySelector('textarea[name="more_info"]').value,
+      };
+
+      this.summaryItems.innerHTML = `<li>${bags} worki z: ${selectedCategories.join(", ")}</li>`;
+
+      this.summaryAddress.innerHTML = `
+        <li>${address.street}</li>
+        <li>${address.city}</li>
+        <li>${address.postcode}</li>
+        <li>${address.phone}</li>
+      `;
+
+      this.summaryDate.innerHTML = `
+        <li>${pickUp.date}</li>
+        <li>${pickUp.time}</li>
+        <li>${pickUp.comment}</li>
+      `;
+    }
+
+    filterOrganizations() {
+      console.log("Filtering organizations");
+      try {
+        const selectedCategories = Array.from(
+          document.querySelectorAll('input[name="categories"]:checked')
+        ).map((input) => input.value);
+        console.log("Selected categories:", selectedCategories);
+
+        document.querySelectorAll(".organization").forEach((org) => {
+          const orgCategories = org.getAttribute("data-categories").split(',');
+
+          const selectedCategoriesNum = selectedCategories.map(Number);
+          const orgCategoriesNum = orgCategories.map(Number);
+
+          const isMatch = selectedCategoriesNum.some((category) =>
+            orgCategoriesNum.includes(category)
+          );
+
+          if (isMatch) {
+            org.style.display = "block";
+          } else {
+            org.style.display = "none";
+          }
+        });
+      } catch (error) {
+        console.error("Error in filterOrganizations:", error);
+      }
+    }
+
     submit(e) {
       e.preventDefault();
-      this.currentStep++;
-      this.updateForm();
+      console.log("Form submitted, sending data to server");
+
+      const formData = new FormData(this.$form.querySelector("form"));
+      const confirmationUrl = this.$form.querySelector("form").dataset.confirmationUrl;
+
+      fetch(this.$form.querySelector("form").action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+      })
+      .then(response => response.ok ? response.text() : Promise.reject(response.status))
+      .then(data => {
+        window.location.href = confirmationUrl;
+      })
+      .catch(error => {
+        console.error('Błąd przy wysyłaniu formularza:', error);
+      });
     }
   }
+
   const form = document.querySelector(".form--steps");
   if (form !== null) {
     new FormSteps(form);

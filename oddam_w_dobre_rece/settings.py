@@ -139,7 +139,7 @@ STATIC_URL = '/static/'
 
 # Folder, w którym znajdują się statyczne pliki
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'main/static'),  # Dodaj tę linijkę
+    os.path.join(BASE_DIR, 'main/static'),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
