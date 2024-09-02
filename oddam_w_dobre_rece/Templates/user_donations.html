@@ -20,12 +20,13 @@ Moje Dary
         </thead>
         <tbody>
             {% for donation in donations %}
-            <tr>
+            <!-- Dodanie klasy CSS 'taken' jeśli dar jest zabrany -->
+            <tr class="{% if donation.is_taken %}taken{% endif %}">
                 <td>{{ donation.created_at }}</td>
                 <td>{{ donation.quantity }}</td>
                 <td>{{ donation.institution.name }}</td>
                 <td>
-                    {% if donation.is_picked_up %}
+                    {% if donation.is_taken %}
                         Odebrano
                     {% else %}
                         Nieodebrane
@@ -33,11 +34,28 @@ Moje Dary
                 </td>
                 <td>
                     <!-- Button do szczegółów darowizny -->
-                    <a href="{% url 'donation_detail' donation.id %}" class="btn btn--small btn--highlighted">Szczegóły</a>
+                    <a href="{% url 'donation_detail' donation.id %}" class="btn btn--small btn--without-border">Szczegóły</a>
+
+                    <!-- Formularz do zmiany statusu -->
+                    <form method="post" action="{% url 'donation_detail' donation.id %}" style="display: inline; margin-left: 10px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="is_taken" value="{% if donation.is_taken %}0{% else %}1{% endif %}">
+                        <button type="submit" class="btn btn--small btn--without-border">
+                            {% if donation.is_taken %}Oznacz jako nieodebrane{% else %}Oznacz jako odebrano{% endif %}
+                        </button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+<!-- Dodanie stylu CSS dla zabranych darów -->
+<style>
+    /* Zmieniamy kolor czcionki na szary dla zabranych darów */
+    .taken {
+        color: gray;
+    }
+</style>
 {% endblock %}

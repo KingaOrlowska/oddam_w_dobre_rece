@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from main.models import Institution, Donation, Category
+from django.utils import timezone
+
 
 
 def landing_page(request):
@@ -36,8 +38,8 @@ def register_view(request):
     if request.method == 'GET':
         return render(request, 'register.html')
     elif request.method == 'POST':
-        name = request.POST.get('name')  # Pobierz imię z formularza
-        surname = request.POST.get('surname')  # Pobierz nazwisko z formularza
+        name = request.POST.get('name')
+        surname = request.POST.get('surname')
         email = request.POST.get('email')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
@@ -48,8 +50,8 @@ def register_view(request):
                     username=email,
                     email=email,
                     password=password,
-                    first_name=name,  # Zapisz imię
-                    last_name=surname  # Zapisz nazwisko
+                    first_name=name,
+                    last_name=surname
                 )
                 login(request, user)
                 return redirect('login')
@@ -68,7 +70,7 @@ def login_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        # Uwierzytelnianie użytkownika za pomocą emaila
+        # Uwierzytelnianie użytkownika za pomocą emaila i hasła
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
@@ -148,19 +150,13 @@ def add_donation(request):
         return HttpResponseNotAllowed(['GET', 'POST'])
 
 
-
-
-
-
-
 def form_confirmation_view(request):
     return render(request, 'form-confirmation.html')
 
 @login_required(login_url='login')
 def user_profile_view(request):
-    user = request.user  # Pobierz aktualnie zalogowanego użytkownika
-    return render(request, 'user_profile.html', {'user': user})  # Przekaż dane użytkownika do szablonu
-
+    user = request.user
+    return render(request, 'user_profile.html', {'user': user})
 
 
 def custom_logout_view(request):
@@ -174,11 +170,22 @@ def custom_logout_view(request):
 @login_required(login_url='login')
 def user_donations_view(request):
     user = request.user
-    donations = Donation.objects.filter(user=user).order_by('is_picked_up', 'pick_up_date', 'created_at')
+    #  posortowanie darów wg stanu zabrane/niezabrane
+    donations = Donation.objects.filter(user=user).order_by('is_taken', 'pick_up_date', 'created_at')
     return render(request, 'user_donations.html', {'donations': donations})
 
 
 @login_required(login_url='login')
 def donation_detail_view(request, donation_id):
     donation = get_object_or_404(Donation, id=donation_id, user=request.user)
+
+    if request.method == 'POST':
+        # Aktualizuj status darowizny w zależności od formularza
+        is_taken = request.POST.get('is_taken', False) == '1'
+        donation.is_taken = is_taken
+        donation.taken_date = timezone.now() if is_taken else None
+        donation.save()
+
+        return redirect('donation_detail', donation_id=donation_id)
+
     return render(request, 'donation_detail.html', {'donation': donation})

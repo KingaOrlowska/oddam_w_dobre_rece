@@ -47,11 +47,9 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    is_picked_up = models.BooleanField(default=False)  # Nowe pole
-    created_at = models.DateTimeField(default=timezone.now)  # Nowe pole
+    is_taken = models.BooleanField(default=False)
+    taken_date = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"Donation of {self.quantity} bags to {self.institution.name}"
-
-
-

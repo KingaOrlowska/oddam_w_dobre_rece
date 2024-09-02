@@ -22,7 +22,7 @@
                 <ul class="dropdown">
                   <li><a href="{% url 'user_profile' %}">Profil</a></li>
                   <!-- Zmiana z 'Ustawienia' na 'Moje zbiórki' -->
-                  <li><a href="{% url 'user_donations' %}">Moje zbiórki</a></li>
+                  <li><a href="{% url 'user_donations' %}">Moje dary</a></li>
                   {% if user.is_superuser %}
                     <!-- Link do panelu administracyjnego dla superużytkownika -->
                     <li><a href="{% url 'admin:index' %}">Panel administracyjny</a></li>

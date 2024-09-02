@@ -66,7 +66,7 @@
     <form action="{% url 'add_donation' %}" method="post" id="donation-form" data-confirmation-url="{% url 'form_confirmation' %}">
       {% csrf_token %}
 
-      <!-- STEP 1: class .active is switching steps -->
+      <!-- STEP 1: class .active następuje przesuwanie nastepnych kroków -->
       <div data-step="1" class="active">
         <h3>Zaznacz co chcesz oddać:</h3>
 
@@ -182,23 +182,23 @@
         <div class="summary">
           <div class="form-section">
             <h4>Oddajesz:</h4>
-            <ul id="summary-items"> <!-- Dodano identyfikator dla listy przedmiotów -->
-              <!-- Elementy będą dynamicznie dodawane przez JavaScript -->
+            <ul id="summary-items"> <!-- identyfikator dla listy przedmiotów -->
+              <!-- Elementy dynamicznie dodawane przez JavaScript -->
             </ul>
           </div>
 
           <div class="form-section form-section--columns">
             <div class="form-section form-section--column">
               <h4>Adres odbioru:</h4>
-              <ul id="summary-address"> <!-- Dodano identyfikator dla adresu odbioru -->
-                <!-- Elementy będą dynamicznie dodawane przez JavaScript -->
+              <ul id="summary-address"> <!-- identyfikator dla adresu odbioru -->
+                <!-- Elementy dynamicznie dodawane przez JavaScript -->
               </ul>
             </div>
 
             <div class="form-section form-section--column">
               <h4>Termin odbioru:</h4>
-              <ul id="summary-date"> <!-- Dodano identyfikator dla daty i godziny odbioru -->
-                <!-- Elementy będą dynamicznie dodawane przez JavaScript -->
+              <ul id="summary-date"> <!-- identyfikator dla daty i godziny odbioru -->
+                <!-- Elementy dynamicznie dodawane przez JavaScript -->
               </ul>
             </div>
           </div>
@@ -206,7 +206,7 @@
 
         <div class="form-group form-group--buttons">
           <button type="button" class="btn prev-step">Wstecz</button>
-          <button type="submit" class="btn" id="confirm-button">Potwierdzam</button> <!-- Dodano id="confirm-button" -->
+          <button type="submit" class="btn" id="confirm-button">Potwierdzam</button>
         </div>
       </div>
     </form>

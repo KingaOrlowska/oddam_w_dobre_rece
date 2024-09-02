@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 Szczegóły Darowizny
@@ -7,19 +8,38 @@ Szczegóły Darowizny
 {% block content %}
 <div class="container" style="padding: 20px;">
     <h2 style="font-size: 2.5em; margin-bottom: 20px;">Szczegóły Darowizny</h2>
-    <p style="font-size: 1.5em;">Data utworzenia: {{ donation.created_at }}</p>
-    <p style="font-size: 1.5em;">Liczba worków: {{ donation.quantity }}</p>
-    <p style="font-size: 1.5em;">Organizacja: {{ donation.institution.name }}</p>
-    <p style="font-size: 1.5em;">Adres: {{ donation.address }}</p>
-    <p style="font-size: 1.5em;">Miasto: {{ donation.city }}</p>
-    <p style="font-size: 1.5em;">Kod pocztowy: {{ donation.zip_code }}</p>
-    <p style="font-size: 1.5em;">Numer telefonu: {{ donation.phone_number }}</p>
-    <p style="font-size: 1.5em;">Data odbioru: {{ donation.pick_up_date }}</p>
-    <p style="font-size: 1.5em;">Godzina odbioru: {{ donation.pick_up_time }}</p>
-    <p style="font-size: 1.5em;">Uwagi dla kuriera: {{ donation.pick_up_comment }}</p>
-    <p style="font-size: 1.5em;">Status: {% if donation.is_picked_up %}Odebrano{% else %}Nieodebrane{% endif %}</p>
+    <div style="font-size: 1.5em; margin-bottom: 20px;">
+        <p><strong>Data utworzenia:</strong> {{ donation.created_at }}</p>
+        <p><strong>Liczba worków:</strong> {{ donation.quantity }}</p>
+        <p><strong>Organizacja:</strong> {{ donation.institution.name }}</p>
+        <p><strong>Adres:</strong> {{ donation.address }}</p>
+        <p><strong>Miasto:</strong> {{ donation.city }}</p>
+        <p><strong>Kod pocztowy:</strong> {{ donation.zip_code }}</p>
+        <p><strong>Numer telefonu:</strong> {{ donation.phone_number }}</p>
+        <p><strong>Data odbioru:</strong> {{ donation.pick_up_date }}</p>
+        <p><strong>Godzina odbioru:</strong> {{ donation.pick_up_time }}</p>
+        <p><strong>Uwagi dla kuriera:</strong> {{ donation.pick_up_comment }}</p>
+        <p><strong>Status:</strong> {% if donation.is_taken %}Odebrano{% else %}Nieodebrane{% endif %}</p>
+        <p><strong>Data zmiany statusu:</strong> {{ donation.taken_date|default:"Brak" }}</p>
+    </div>
 
-    <!-- Button powrotu do listy darów -->
-    <a href="{% url 'user_donations' %}" class="btn btn--small btn--highlighted" style="margin-top: 20px;">Powrót do listy darów</a>
+    <!-- Formularz do aktualizacji statusu -->
+    <form method="post" action="{% url 'donation_detail' donation.id %}">
+        {% csrf_token %}
+        <div class="form-group form-group--checkbox">
+            <label>
+                <input type="checkbox" name="is_taken" value="1" {% if donation.is_taken %}checked{% endif %}>
+                <span class="checkbox"></span>
+                <span class="description">Oznacz jako odebrano</span>
+            </label>
+        </div>
+
+        <!-- Dodanie marginesu, aby oddzielić przycisk od checkboxa -->
+        <div class="form-group form-group--buttons" style="margin-top: 20px;">
+            <button type="submit" class="btn btn--small btn--without-border">Zaktualizuj status</button>
+        </div>
+    </form>
+
+    <a href="{% url 'user_donations' %}" class="btn btn--small btn--without-border" style="margin-top: 20px;">Powrót do listy darów</a>
 </div>
 {% endblock %}
